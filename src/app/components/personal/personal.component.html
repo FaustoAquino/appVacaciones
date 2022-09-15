@@ -1,0 +1,141 @@
+<ng-container *ngIf="!isVacation else vacation">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="titulo">EMPLEADOS</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="titulo">{{ accion | uppercase }} EMPLEADO</h5>
+          <!--bindeando el formulario ngsubimt es un evenbainin-->
+            <form [formGroup]="form" (ngSubmit)="agregarEmpleado()">
+              <div class="input-group input-group-lg mb-3">
+                <span class="input-group-text">
+                  <i class="fa-solid fa-user"
+                  [class.green-icon]="this.form.get('nombreEmpleado')?.valid"
+                  [class.red-icon]="this.form.get('nombreEmpleado')?.invalid && this.form.get('nombreEmpleado')?.touched"></i>
+                </span>
+                <input formControlName="nombreEmpleado" type="text" class="form-control" placeholder="Nombre Completo">
+              </div>
+
+              <div class="input-group input-group-lg mb-3">
+                <span class="input-group-text">
+                  <i class="fa-solid fa-credit-card"
+                  [class.green-icon]="this.form.get('ci')?.valid"
+                  [class.red-icon]="this.form.get('ci')?.invalid && this.form.get('ci')?.touched"></i>
+                </span>
+                <input formControlName="ci" type="text" class="form-control" placeholder="Cedula de Identidad">
+              </div>
+
+              <div class="row">
+                <div class="col-lg-4">
+                   <label for="fechaNacimiento" class="mt-2">Fecha de Nacimiento: </label>
+                 </div>
+               <div class="col-lg-8">
+                 <div class="input-group input-group-lg mb-3">
+                   <span class="input-group-text">
+                     <i class="fa-solid fa-calendar"
+                     [class.green-icon]="this.form.get('fechaNacimiento')?.valid"
+                   [class.red-icon]="this.form.get('fechaNacimiento')?.invalid && this.form.get('fechaNacimiento')?.touched"></i>
+                   </span>
+                   <input formControlName="fechaNacimiento" maxlength="10" type="date" class="form-control">
+                 </div>
+               </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="input-group input-group-lg mb-3">
+                    <span class="input-group-text">
+                      <i class="fa-solid fa-city"
+                      [class.green-icon]="this.form.get('nacionalidad')?.valid"
+                    [class.red-icon]="this.form.get('nacionalidad')?.invalid && this.form.get('nacionalidad')?.touched"></i>
+                    </span>
+                    <input formControlName="nacionalidad" maxlength="5" type="text" class="form-control" placeholder="Nacionalidad">
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="input-group input-group-lg mb-3">
+                    <span class="input-group-text">
+                      <i class="fa-sharp fa-solid fa-person-half-dress"
+                      [class.green-icon]="this.form.get('sexo')?.valid"
+                    [class.red-icon]="this.form.get('sexo')?.invalid && this.form.get('sexo')?.touched"></i>
+                    </span>
+                    <input formControlName="sexo" maxlength="1" type="text" class="form-control" placeholder="Sexo">
+                  </div>
+                </div>
+               </div>
+
+
+             <div class="row">
+               <div class="col-lg-4">
+                  <label for="fechaInicio" class="mt-2">Fecha de inicio: </label>
+                </div>
+              <div class="col-lg-8">
+                <div class="input-group input-group-lg mb-3">
+                  <span class="input-group-text">
+                    <i class="fa-solid fa-briefcase"
+                    [class.green-icon]="this.form.get('fechaInicio')?.valid"
+                  [class.red-icon]="this.form.get('fechaInicio')?.invalid && this.form.get('fechaInicio')?.touched"></i>
+                  </span>
+                  <input formControlName="fechaInicio" maxlength="10" type="date" class="form-control">
+                </div>
+              </div>
+             </div>
+
+             <div class="d-grid gap-2">
+              <button [disabled]="this.form.invalid" class="btn btn-primary" type="submit">
+                <i class="fa-solid fa-database"></i>&nbsp; Registrar</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="titulo">LISTA DE EMPLEADOS</h5>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Empleado</th>
+                  <th scope="col">CI</th>
+                  <th scope="col">Nacionalidad</th>
+                  <th scope="col">Genero</th>
+                  <th scope="col">Fecha Inicio</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let empleado of listEmpleados">
+                  <td >{{ empleado.nombreEmpleado }} </td>
+                  <td>{{ empleado.ci }}</td>
+                  <td>{{ empleado.nacionalidad }}</td>
+                  <td>{{ empleado.sexo}}</td>
+                  <td>{{ empleado.fechaInicio | date: 'shortDate' }}</td>
+                  <td>
+                    <i (click)="editarDatosEmpleado(empleado)" class="fa-regular fa-pen-to-square text-info"></i>
+                    <i (click)="eliminarEmpleado(empleado.idEmpleado)" class="fa-solid fa-trash-can text-danger"></i>
+                    <i (click)="solicitarVacaciones(empleado.idEmpleado)" class="fa-regular fa-pen-to-square text-success"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #vacation>
+  <app-reporte [idEmpleado]="sentId" (showForm0)="onShowForm()"></app-reporte>
+</ng-template>
